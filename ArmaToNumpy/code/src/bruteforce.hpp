@@ -1,10 +1,9 @@
-#pragma once
-#include <armadillo.h>
-#include "pyarma.h"
+#include <armadillo>
+#include "pyarma.hpp"
 #include <algorithm>
 
-double
-bruteforce(arma::mat& a, arma::mat& b)
+inline
+double bruteforce(arma::mat& a, arma::mat& b)
 {
 	if(a.n_rows != b.n_rows || a.n_cols != b.n_cols)
 		throw std::logic_error("Brute force works only for equal sized graphs");
@@ -18,17 +17,13 @@ bruteforce(arma::mat& a, arma::mat& b)
 		if(d < minD) {
 			minD = d;
 		}
-		if(minD == 0) {
-			return 0;
-		}
 	}while(std::next_permutation(perm.begin(),perm.end()));
 
 	return minD;
 }
 
-
-double
-bruteforce(py::array a, py::array b)
+inline
+double bruteforce(py::array a, py::array b)
 {
 	arma::mat A = mat_py_to_c(a);
 	arma::mat B = mat_py_to_c(b);
