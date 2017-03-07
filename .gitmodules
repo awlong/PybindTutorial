@@ -1,3 +1,0 @@
-[submodule "ArmaToNumpy/code/pybind11"]
-	path = ArmaToNumpy/code/pybind11
-	url = https://github.com/pybind/pybind11
