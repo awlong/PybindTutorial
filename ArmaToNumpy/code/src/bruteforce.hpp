@@ -3,22 +3,15 @@
 #include <algorithm>
 
 inline
-double bruteforce(arma::mat& a, arma::mat& b)
-{
-	if(a.n_rows != b.n_rows || a.n_cols != b.n_cols)
-		throw std::logic_error("Brute force works only for equal sized graphs");
-	
-	arma::uvec perm = arma::regspace<arma::uvec>(0,a.n_rows-1);
-
+double bruteforce(arma::mat& A, arma::mat& B) {
+	arma::uvec perm = arma::regspace<arma::uvec>(0,A.n_rows-1);
 	double minD = arma::datum::inf;
-	do
-	{
-		double d = arma::norm(a - b(perm,perm),"fro");
+	do {
+		double d = arma::norm(A - B(perm,perm),"fro");
 		if(d < minD) {
 			minD = d;
 		}
 	}while(std::next_permutation(perm.begin(),perm.end()));
-
 	return minD;
 }
 
