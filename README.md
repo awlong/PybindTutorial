@@ -22,13 +22,17 @@ But Python is extremely useful for almost all fields and there are already a hug
 
 ```
 import scipy.weave
-scipy.weave.inline('printf("Hello World");')
 
+scipy.weave.inline('printf("Hello World");')
 creating /tmp/scipy-awlong2-7hS9Hn/...
 Hello World
+
+A=3.5;B=4.2
+scipy.weave.inline('return_val = A+B;',['A','B'])
+7.7
 ```
 
 * [Boost.python](http://www.boost.org/doc/libs/1_63_0/libs/python/doc/html/index.html) - A mess to learn/bloated but extremely powerful once you get it.
 
 
-We're going to go over pybind11 as it's the one I'm most familiar with (I started with Boost but moved over as it seemed easier to manage). For simple tasks, scipy.weave.inline() may be the easiest option as you can directly write up a simple script and just walk away without worrying about compilation.
+We're going to go over pybind11 as it's the one I'm most familiar with. For simple tasks, scipy.weave.inline() may be the easiest option as you can directly write up a simple script and just walk away without worrying about compilation (first call is compiled, all subsequent calls use the pre-compiled code).
