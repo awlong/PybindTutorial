@@ -5,43 +5,41 @@
 
 namespace py=pybind11;
 
+typedef py::array_t<double, py::array::f_style | py::array::forcecast> pyarr_d;
+//py::array_t<double, py::array::c_style | py::array::forcecast>& b)
+
 inline
-arma::mat mat_py_to_c(py::array& b)
+arma::mat py_to_mat(pyarr_d& pmat)
 {
-	py::buffer_info info = b.request();
-	if(info.format != py::format_descriptor<arma::mat::elem_type>::format())
-		throw std::runtime_error("incompatible buffer format");
-	
-	arma::mat m;
-	if(info.ndim == 1) {
-	// Vector
-		m = arma::mat(reinterpret_cast<arma::mat::elem_type*>(info.ptr),info.shape[0],1);
-	} else if((info.strides[0] == info.itemsize) && (info.strides[1] == (info.itemsize*info.shape[0]))) {
-	// R-contiguous
-		m = arma::mat(reinterpret_cast<arma::mat::elem_type*>(info.ptr),info.shape[0],info.shape[1]);
-	} else if((info.strides[1] == info.itemsize) && (info.strides[0] == (info.itemsize*info.shape[1]))) {
-	// C-contiguous
-		m = arma::mat(reinterpret_cast<arma::mat::elem_type*>(info.ptr),info.shape[1],info.shape[0]);
-		arma::inplace_trans(m);
-	} else {
-		throw std::runtime_error("array not contiguous");
-	}
-	return m;
+	py::buffer_info info = pmat.request();
+	arma::mat amat = arma::mat(reinterpret_cast<arma::mat::elem_type*>(info.ptr),info.shape[0],info.shape[1]);
+	return amat;
 }
 
 inline 
-py::array_t<double> mat_c_to_py(arma::mat &amat)
+py::array_t<double> mat_to_py(arma::mat &mat)
 {
-	py::array_t<double> pmat = py::array_t<double>(amat.n_elem);
-	py::buffer_info pmat_buffer = pmat.request();
-	
-	printf("Format:%s\tstride=[%lu,%lu]\tshape=[%lu,%lu]\n",
-			pmat_buffer.format.c_str(),
-			pmat_buffer.strides[0],
-			pmat_buffer.strides[0],
-			pmat_buffer.shape[0],
-			pmat_buffer.shape[1]);
-	//double* ptr = (double*)pmat_buffer.ptr;
-	//memcpy(ptr, amat.memptr(), sizeof(double)*num_elems);
-	return pmat;
+	py::buffer_info buffer(
+		mat.memptr(),
+		sizeof(double),
+		py::format_descriptor<double>::format(),
+		2,
+		{ mat.n_rows, mat.n_cols },
+		{ sizeof(double), sizeof(double) * mat.n_rows }
+	);
+	return py::array_t<double>(buffer);	
+}
+
+inline
+py::array_t<arma::sword> uvec_to_py(arma::uvec &vec)
+{
+	py::buffer_info buffer(
+		vec.memptr(),
+		sizeof(arma::sword),
+		py::format_descriptor<arma::sword>::format(),
+		1,
+		{ vec.n_elem },
+		{ sizeof(arma::sword) }
+	);
+	return py::array_t<arma::sword>(buffer);
 }
