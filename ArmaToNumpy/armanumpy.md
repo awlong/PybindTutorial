@@ -58,8 +58,8 @@ A.n_elems // 20
 #### Accessing Elements/Slicing
 
 * `A(i,j)` to access the (i,j), will throw out of bounds error if not big enough matrix
-* `A.col(k)`/`A.row(k)` to access a column or row a the matrix
-* `A.cols(p,q)`/`A.rows(p,q)` to access the contiquous columns/rows from [p,q]
+* `A.col(k)`/`A.row(k)` to access a column or row of the matrix
+* `A.cols(p,q)`/`A.rows(p,q)` to access the contiguous columns/rows from [p,q]
 * `A(arma::span(p,q),arma::span(r,s))` to access a sub-region of the matrix for rows [p,q] and columns [r,s]
 * `A(uvec_of_indices)` to access the elements given in a arma::uvec type
 
